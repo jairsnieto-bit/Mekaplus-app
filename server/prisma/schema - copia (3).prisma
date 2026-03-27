@@ -1,0 +1,108 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      Role     @default(OPERATOR)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  guides    Guide[]
+}
+
+enum Role {
+  ADMIN
+  OPERATOR
+}
+
+model Guide {
+  id                  String   @id @default(cuid())
+  guideNumber         String   @unique
+  senderId            String?  // ✅ NUEVO: Relación con Sender
+  razonSocial         String
+  direccion           String
+  localidad           String
+  identificacionUsuario String?
+  referenciaEntrega   String?
+  fechaEntrega        DateTime?
+  horaEntrega         String?
+  estado              String   @default("PENDIENTE")
+  createdBy           String
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  sender              Sender?  @relation(fields: [senderId], references: [id])
+  createdByUser       User     @relation(fields: [createdBy], references: [id])
+
+  // ✅ AGREGAR: Relación inversa para historial
+  statusHistory       GuideStatusHistory[]
+
+  @@index([senderId])
+  @@index([guideNumber])
+  @@index([estado])
+  @@index([createdAt])
+}
+
+model Setting {
+  id            String  @id @default(uuid())
+  key           String  @unique
+  value         String?
+  type          String  @default("string")
+  description   String?
+  updatedAt     DateTime @updatedAt
+}
+
+model GuideConfig {
+  id              String  @id @default(uuid())
+  logo            String?
+  primaryColor    String  @default("#0066CC")
+  guidePrefix     String  @default("GUIA")
+  guideStart      Int     @default(1)
+  guideEnd        Int     @default(999999)
+  currentNumber   Int     @default(1)
+  fieldsEnabled   Json    @default("{\"razonSocial\":true,\"direccion\":true,\"ciudad\":true}")
+  updatedAt       DateTime @updatedAt
+}
+
+// ✅ AGREGAR: Modelo Sender (si no existe)
+model Sender {
+  id        String   @id @default(cuid())
+  name      String
+  nit       String?
+  address   String?
+  phone     String?
+  email     String?
+  department String?
+  isActive  Boolean  @default(true)
+  guides    Guide[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([isActive])
+  @@index([name])
+}
+
+// ✅ AGREGAR: Historial de cambios de estado de guías
+model GuideStatusHistory {
+  id             String   @id @default(cuid())
+  guideId        String
+  previousStatus String
+  newStatus      String
+  observation    String   // ✅ Observación obligatoria
+  changedBy      String   // ID del usuario que hizo el cambio
+  createdAt      DateTime @default(now())
+
+  guide          Guide    @relation(fields: [guideId], references: [id], onDelete: Cascade)
+
+  @@index([guideId])
+  @@index([createdAt])
+}
+

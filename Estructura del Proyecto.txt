@@ -1,0 +1,20 @@
+logistics-app/
+├── server/                 # Backend Node.js + Express
+│   ├── prisma/            # Schema y migraciones de BD
+│   ├── controllers/       # Controladores de rutas
+│   ├── routes/            # Definición de endpoints
+│   ├── services/          # Lógica de negocio
+│   ├── middlewares/       # Middlewares (auth, upload)
+│   ├── utils/             # Utilidades
+│   └── server.js          # Punto de entrada
+│
+├── client/                # Frontend React + Vite
+│   ├── src/
+│   │   ├── components/    # Componentes reutilizables
+│   │   ├── pages/         # Páginas de la aplicación
+│   │   ├── services/      # Servicios API
+│   │   ├── context/       # Contextos (Auth)
+│   │   └── layout/        # Layout principal
+│   └── index.html
+│
+└── README.md

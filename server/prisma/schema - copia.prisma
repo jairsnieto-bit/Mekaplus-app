@@ -1,0 +1,62 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      Role     @default(OPERATOR)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  guides    Guide[]
+}
+
+enum Role {
+  ADMIN
+  OPERATOR
+}
+
+model Guide {
+  id                    String   @id @default(uuid())
+  guideNumber           String   @unique
+  razonSocial           String
+  localidad             String
+  direccion             String
+  identificacionUsuario String
+  referenciaEntrega     String
+  fechaEntrega          DateTime?
+  horaEntrega           String?
+  estado                String   @default("PENDIENTE")
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+  createdBy             String
+  creator               User     @relation(fields: [createdBy], references: [id])
+}
+
+model Setting {
+  id            String  @id @default(uuid())
+  key           String  @unique
+  value         String?
+  type          String  @default("string")
+  description   String?
+  updatedAt     DateTime @updatedAt
+}
+
+model GuideConfig {
+  id              String  @id @default(uuid())
+  logo            String?
+  primaryColor    String  @default("#0066CC")
+  guidePrefix     String  @default("GUIA")
+  guideStart      Int     @default(1)
+  guideEnd        Int     @default(999999)
+  currentNumber   Int     @default(1)
+  fieldsEnabled   Json    @default("{\"razonSocial\":true,\"direccion\":true,\"ciudad\":true}")
+  updatedAt       DateTime @updatedAt
+}
