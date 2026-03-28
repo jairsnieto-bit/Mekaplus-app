@@ -18,6 +18,35 @@ const dbConfigRoutes = require('./routes/dbConfig.routes');
 
 const app = express();
 
+// ✅ CORS — must be the FIRST middleware so preflight OPTIONS requests are
+// answered before any other handler (body-parser, auth, routes, etc.) runs.
+const ALLOWED_ORIGINS = (process.env.CORS_ORIGIN
+  ? process.env.CORS_ORIGIN.split(',').map((o) => o.trim())
+  : []
+).concat([
+  'https://mekaplus-7bqygxy7s-jair-simarra-s-projects.vercel.app',
+  'http://localhost:5173',
+  'http://localhost:3000',
+]);
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      // Allow requests with no origin (mobile apps, curl, Postman, etc.)
+      if (!origin) return callback(null, true);
+      if (ALLOWED_ORIGINS.includes(origin)) return callback(null, true);
+      callback(new Error(`CORS: origin '${origin}' not allowed`));
+    },
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+    optionsSuccessStatus: 200, // Some legacy browsers choke on 204
+  })
+);
+
+// ✅ Explicitly handle preflight OPTIONS for all routes
+app.options('*', cors());
+
 // ✅ AUMENTAR LÍMITE DE MEMORIA Y TIMEOUT
 app.use((req, res, next) => {
   if (req.path.includes('/guides/download-pdf')) {
@@ -36,16 +65,6 @@ createUploadsDirectory();
 
 // Serve uploaded files
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-
-//app.use(cors());
-app.use(cors({
-  origin: process.env.CORS_ORIGIN || '*',
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
-// REMOVED: app.use(express.json()); - ya está arriba con límite
-// REMOVED: app.use(express.urlencoded()); - ya está arriba con límite
 
 // Routes
 app.use('/api/auth', authRoutes);
