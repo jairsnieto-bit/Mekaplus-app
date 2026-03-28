@@ -1,0 +1,4 @@
+id,key,value,type,description,updatedAt
+e4c9e8e2-aeab-480e-a4e0-c54a1ff82b2c,APP_NAME,Mekaplus Express,string,Nombre de la aplicación,2026-03-07 00:38:08.425
+b11c9e3a-ff48-4765-8a15-d1fd549ab32b,COMPANY_NIT,901505437-1,string,NIT de la empresa,2026-03-07 00:38:08.429
+5aecd1ad-8dae-4a98-a1ee-034c19770576,COMPANY_ADDRESS,Calle.41 No.43 - 128 Ofic 11 Centro,string,Dirección de la empresa,2026-03-07 00:38:08.43
