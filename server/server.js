@@ -37,7 +37,13 @@ createUploadsDirectory();
 // Serve uploaded files
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-app.use(cors());
+//app.use(cors());
+app.use(cors({
+  origin: process.env.CORS_ORIGIN || '*',
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 // REMOVED: app.use(express.json()); - ya está arriba con límite
 // REMOVED: app.use(express.urlencoded()); - ya está arriba con límite
 
