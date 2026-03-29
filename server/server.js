@@ -54,7 +54,7 @@ app.use(cors({
     if (!origin) return callback(null, true);
     if (allowedOrigins.includes(origin)) return callback(null, true);
     // Allow any *.vercel.app subdomain for preview deployments
-    if (/^https:\/\/[^.]+\.vercel\.app$/.test(origin)) return callback(null, true);
+    if (/^https:\/\/[^/]+\.vercel\.app$/.test(origin)) return callback(null, true);
     callback(new Error(`CORS: origin '${origin}' not allowed`));
   },
   credentials: true
