@@ -42,11 +42,21 @@ app.use(express.urlencoded({ limit: '50mb', extended: true }));
 app.use('/uploads', express.static(uploadPath));
 
 // ✅ CORS CORRECTO
+const allowedOrigins = [
+  'http://localhost:5173',
+  'https://mekaplus-7bqygxy7s-jair-simarra-s-projects.vercel.app',
+  process.env.FRONTEND_URL,
+].filter(Boolean);
+
 app.use(cors({
-  origin: [
-    'http://localhost:5173',
-    'https://mekaplus-n09ql011h-jair-simarra-s-projects.vercel.app'
-  ],
+  origin: (origin, callback) => {
+    // Allow requests with no origin (e.g. mobile apps, curl, server-to-server)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) return callback(null, true);
+    // Allow any *.vercel.app subdomain for preview deployments
+    if (/^https:\/\/[^.]+\.vercel\.app$/.test(origin)) return callback(null, true);
+    callback(new Error(`CORS: origin '${origin}' not allowed`));
+  },
   credentials: true
 }));
 
