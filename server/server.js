@@ -41,26 +41,59 @@ app.use(express.urlencoded({ limit: '50mb', extended: true }));
 // ✅ STATIC FILES
 app.use('/uploads', express.static(uploadPath));
 
-// ✅ CORS CORRECTO
+// ✅ CORS — bulletproof for Vercel dynamic preview URLs
+const VERCEL_PATTERN = /\.vercel\.app$/;
+
 const allowedOrigins = [
-  'http://localhost:5173',
-  'https://mekaplus-7bqygxy7s-jair-simarra-s-projects.vercel.app',
-  process.env.FRONTEND_URL,
+  'http://localhost:5173',   // Vite dev server
+  'http://localhost:3000',   // alternative dev
+  process.env.FRONTEND_URL, // custom domain via env var
 ].filter(Boolean);
+
+function isOriginAllowed(origin) {
+  // No origin header → mobile apps, curl, server-to-server — always allow
+  if (!origin) return true;
+
+  console.log(`🌐 [CORS] Checking origin: ${origin}`);
+
+  // Exact match against the static allow-list
+  if (allowedOrigins.includes(origin)) {
+    console.log(`✅ [CORS] Allowed (exact match): ${origin}`);
+    return true;
+  }
+
+  // Any *.vercel.app URL — covers production + every preview deployment
+  if (VERCEL_PATTERN.test(origin)) {
+    console.log(`✅ [CORS] Allowed (*.vercel.app): ${origin}`);
+    return true;
+  }
+
+  console.log(`❌ [CORS] Blocked: ${origin}`);
+  return false;
+}
 
 app.use(cors({
   origin: (origin, callback) => {
-    // Allow requests with no origin (e.g. mobile apps, curl, server-to-server)
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.includes(origin)) return callback(null, true);
-    // Allow any *.vercel.app subdomain for preview deployments
-    if (/^https:\/\/[^/]+\.vercel\.app$/.test(origin)) return callback(null, true);
-    callback(new Error(`CORS: origin '${origin}' not allowed`));
+    if (isOriginAllowed(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error(`CORS: origin '${origin}' not allowed`));
+    }
   },
-  credentials: true
+  credentials: true,
 }));
 
-app.options('*', cors());
+// Handle pre-flight requests for all routes
+app.options('*', cors({
+  origin: (origin, callback) => {
+    if (isOriginAllowed(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error(`CORS: origin '${origin}' not allowed`));
+    }
+  },
+  credentials: true,
+}));
 
 // ✅ IMPORTAR RUTAS
 const authRoutes = require('./routes/auth.routes');
