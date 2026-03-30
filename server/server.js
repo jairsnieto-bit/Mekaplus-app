@@ -25,6 +25,7 @@ try {
 }
 
 const app = express();
+console.log('🔥 VERSION CORS NUEVA ACTIVA');
 
 // ✅ TIMEOUT SOLO PARA PDF
 app.use((req, res, next) => {
