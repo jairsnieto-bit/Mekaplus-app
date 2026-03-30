@@ -7,7 +7,8 @@ const fs = require('fs');
 dotenv.config();
 
 // ✅ PUERTO CORRECTO (Railway)
-const PORT = process.env.PORT || 10000;
+//const PORT = process.env.PORT || 10000;
+const PORT = process.env.PORT || 3000;
 
 // ✅ CREAR CARPETA UPLOADS (FIX CRASH RAILWAY)
 const uploadPath = path.join(__dirname, 'uploads');
