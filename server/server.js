@@ -42,7 +42,9 @@ app.use(express.urlencoded({ limit: '50mb', extended: true }));
 app.use('/uploads', express.static(uploadPath));
 
 // ✅ CORS — bulletproof for Vercel dynamic preview URLs
+//const VERCEL_PATTERN = /\.vercel\.app$/;
 const VERCEL_PATTERN = /\.vercel\.app$/;
+const RAILWAY_PATTERN = /\.railway\.app$/;
 
 const allowedOrigins = [
   'http://localhost:5173',   // Vite dev server
@@ -50,7 +52,7 @@ const allowedOrigins = [
   process.env.FRONTEND_URL, // custom domain via env var
 ].filter(Boolean);
 
-function isOriginAllowed(origin) {
+/*function isOriginAllowed(origin) {
   // No origin header → mobile apps, curl, server-to-server — always allow
   if (!origin) return true;
 
@@ -65,6 +67,30 @@ function isOriginAllowed(origin) {
   // Any *.vercel.app URL — covers production + every preview deployment
   if (VERCEL_PATTERN.test(origin)) {
     console.log(`✅ [CORS] Allowed (*.vercel.app): ${origin}`);
+    return true;
+  }
+
+  console.log(`❌ [CORS] Blocked: ${origin}`);
+  return false;
+}*/
+function isOriginAllowed(origin) {
+  if (!origin) return true;
+
+  console.log(`🌐 [CORS] Checking origin: ${origin}`);
+
+  if (allowedOrigins.includes(origin)) {
+    console.log(`✅ [CORS] Allowed (exact match): ${origin}`);
+    return true;
+  }
+
+  if (VERCEL_PATTERN.test(origin)) {
+    console.log(`✅ [CORS] Allowed (*.vercel.app): ${origin}`);
+    return true;
+  }
+
+  // ✅ NUEVO: permitir Railway
+  if (RAILWAY_PATTERN.test(origin)) {
+    console.log(`✅ [CORS] Allowed (*.railway.app): ${origin}`);
     return true;
   }
 
