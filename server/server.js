@@ -62,8 +62,7 @@ app.use('/uploads', express.static(uploadPath));
   origin: true, // permite cualquier frontend (Railway, local, etc)
   credentials: true
 }));*/
-const cors = require('cors');
-
+//const cors = require('cors');
 app.use(cors({
   origin: 'https://mekaplus-frontend.up.railway.app',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
