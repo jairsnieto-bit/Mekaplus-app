@@ -119,6 +119,15 @@ app.use(cors({
   credentials: true
 }));
 
+///////
+const { PrismaClient } = require('@prisma/client');
+const prisma = new PrismaClient();
+
+prisma.$connect()
+  .then(() => console.log('✅ Conectado a Supabase'))
+  .catch(err => console.error('❌ Error Supabase:', err));
+///////
+
 // Handle pre-flight requests for all routes
 app.options('*', cors({
   origin: (origin, callback) => {
