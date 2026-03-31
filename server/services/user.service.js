@@ -375,7 +375,7 @@ class UserService {
   }
 
   // ✅ Agregar este método en UserService
-async findUserByEmail(email) {
+/*async findUserByEmail(email) {
   try {
     const user = await prisma.user.findUnique({
       where: { 
@@ -386,6 +386,21 @@ async findUserByEmail(email) {
     return user;
   } catch (error) {
     console.error('Error finding user by email:', error);
+    throw new Error(`Error al buscar usuario: ${error.message}`);
+  }
+}*/
+  async findUserByEmail(email) {
+  try {
+    const user = await prisma.user.findFirst({
+      where: { 
+        email: email.toLowerCase(),
+        deletedAt: null
+      }
+    });
+
+    return user;
+  } catch (error) {
+    console.error('💥 Error finding user by email:', error);
     throw new Error(`Error al buscar usuario: ${error.message}`);
   }
 }
