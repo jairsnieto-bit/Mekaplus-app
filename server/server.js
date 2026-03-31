@@ -120,12 +120,12 @@ app.use(cors({
 }));
 
 ///////
-const { PrismaClient } = require('@prisma/client');
+/*const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 prisma.$connect()
   .then(() => console.log('✅ Conectado a Supabase'))
-  .catch(err => console.error('❌ Error Supabase:', err));
+  .catch(err => console.error('❌ Error Supabase:', err));*/
 
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
@@ -137,7 +137,7 @@ const prisma = new PrismaClient();
   } catch (error) {
     console.error('❌ ERROR REAL:', error.message);
   }
-})();
+});
 ///////
 
 // Handle pre-flight requests for all routes
