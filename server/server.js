@@ -120,14 +120,14 @@ app.use(cors({
 }));
 
 ///////
-/*const { PrismaClient } = require('@prisma/client');
+const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 prisma.$connect()
   .then(() => console.log('✅ Conectado a Supabase'))
   .catch(err => console.error('❌ Error Supabase:', err));*/
 
-/*const { PrismaClient } = require('@prisma/client');
+const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 (async () => {
@@ -137,7 +137,7 @@ const prisma = new PrismaClient();
   } catch (error) {
     console.error('❌ ERROR REAL:', error.message);
   }
-});*/
+});
 console.log('🌍 DATABASE_URL:', process.env.DATABASE_URL ? '✅ CARGADA' : '❌ NO EXISTE');
 ///////
 
