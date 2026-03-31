@@ -99,7 +99,7 @@ function isOriginAllowed(origin) {
   return false;
 }
 
-app.use(cors({
+/*app.use(cors({
   origin: (origin, callback) => {
     if (isOriginAllowed(origin)) {
       callback(null, true);
@@ -108,6 +108,15 @@ app.use(cors({
     }
   },
   credentials: true,
+}));*/
+// ✅ CORS SIMPLE Y EFECTIVO (Railway)
+app.use(cors({
+  origin: [
+    'http://localhost:5173',
+    'http://localhost:3000',
+    'https://mekaplus-frontend.up.railway.app'
+  ],
+  credentials: true
 }));
 
 // Handle pre-flight requests for all routes
