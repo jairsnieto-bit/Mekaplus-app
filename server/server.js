@@ -58,10 +58,21 @@ app.use(express.urlencoded({ limit: '50mb', extended: true }));
 app.use('/uploads', express.static(uploadPath));
 
 // ✅ CORS SIMPLE Y SEGURO (SOLUCIONA TU ERROR)
-app.use(cors({
+/*app.use(cors({
   origin: true, // permite cualquier frontend (Railway, local, etc)
   credentials: true
+}));*/
+const cors = require('cors');
+
+app.use(cors({
+  origin: 'https://mekaplus-frontend.up.railway.app',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
 }));
+
+// 🔥 ESTA LÍNEA ES LA CLAVE
+app.options('*', cors());
 
 console.log('🔥 CORS ACTIVO Y FUNCIONANDO');
 
