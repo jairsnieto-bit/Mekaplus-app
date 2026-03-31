@@ -63,15 +63,30 @@ app.use('/uploads', express.static(uploadPath));
   credentials: true
 }));*/
 //const cors = require('cors');
-app.use(cors({
+/*app.use(cors({
   origin: 'https://mekaplus-frontend.up.railway.app',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
-}));
+}));*/
+// 🔥 CORS MANUAL (SOLUCIÓN DEFINITIVA)
+const allowedOrigin = 'https://mekaplus-frontend.up.railway.app';
+
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', allowedOrigin);
+  res.header('Access-Control-Allow-Credentials', 'true');
+  res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(204);
+  }
+
+  next();
+});
 
 // 🔥 ESTA LÍNEA ES LA CLAVE
-app.options('*', cors());
+//app.options('*', cors());
 
 console.log('🔥 CORS ACTIVO Y FUNCIONANDO');
 
