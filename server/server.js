@@ -110,14 +110,14 @@ function isOriginAllowed(origin) {
   credentials: true,
 }));*/
 // ✅ CORS SIMPLE Y EFECTIVO (Railway)
-app.use(cors({
+/*app.use(cors({
   origin: [
     'http://localhost:5173',
     'http://localhost:3000',
     'https://mekaplus-frontend.up.railway.app'
   ],
   credentials: true
-}));
+}));*/
 
 ///////
 const { PrismaClient } = require('@prisma/client');
@@ -142,7 +142,7 @@ console.log('🌍 DATABASE_URL:', process.env.DATABASE_URL ? '✅ CARGADA' : '�
 ///////
 
 // Handle pre-flight requests for all routes
-app.options('*', cors({
+/*app.options('*', cors({
   origin: (origin, callback) => {
     if (isOriginAllowed(origin)) {
       callback(null, true);
@@ -151,6 +151,10 @@ app.options('*', cors({
     }
   },
   credentials: true,
+}));*/
+app.use(cors({
+  origin: true,
+  credentials: true
 }));
 
 // ✅ IMPORTAR RUTAS
