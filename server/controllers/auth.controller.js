@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 
 class AuthController {
   // ✅ LOGIN
-  async login(req, res) {
+  /*async login(req, res) {
     try {
       const { email, password } = req.body;
 
@@ -42,7 +42,60 @@ class AuthController {
       console.error('Error en login:', error);
       res.status(500).json({ error: 'Error al iniciar sesión' });
     }
+  }*/
+  async login(req, res) {
+  try {
+    console.log('🔥 LOGIN REQUEST:', req.body);
+
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({ error: 'Email y contraseña son requeridos' });
+    }
+
+    const user = await userService.findUserByEmail(email);
+
+    console.log('👤 USER DB:', user ? 'ENCONTRADO' : 'NO EXISTE');
+
+    if (!user) {
+      return res.status(401).json({ error: 'Usuario no existe' });
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (!isMatch) {
+      return res.status(401).json({ error: 'Contraseña incorrecta' });
+    }
+
+    if (user.status !== 'ACTIVE') {
+      return res.status(403).json({ error: 'Cuenta inactiva o bloqueada' });
+    }
+
+    await userService.updateLastLogin(user.id);
+
+    const token = jwt.sign(
+      { id: user.id, email: user.email, role: user.role },
+      process.env.JWT_SECRET,
+      { expiresIn: '24h' }
+    );
+
+    const { password: _, ...userWithoutPassword } = user;
+
+    res.json({
+      message: 'Login exitoso',
+      token,
+      user: userWithoutPassword
+    });
+
+  } catch (error) {
+    console.error('💥 ERROR LOGIN REAL:', error);
+
+    res.status(500).json({
+      error: 'Error interno del servidor',
+      detalle: error.message
+    });
   }
+}
 
   // ✅ REGISTER
   async register(req, res) {
