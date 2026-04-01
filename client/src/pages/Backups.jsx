@@ -3,7 +3,10 @@ import axios from 'axios';
 import { Database, Download, Trash2, RefreshCw, Calendar, HardDrive } from 'lucide-react';
 import toast from 'react-hot-toast';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const API_URL = import.meta.env.VITE_API_URL || 'http://Mekaplus-app.railway.internal:8080/api';
+
+console.log('🔧 [Backups] VITE_API_URL env:', import.meta.env.VITE_API_URL);
+console.log('🔧 [Backups] Using API_URL:', API_URL);
 
 const Backups = () => {
   const [backups, setBackups] = useState([]);
