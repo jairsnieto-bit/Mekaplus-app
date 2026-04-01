@@ -69,14 +69,27 @@ app.use('/uploads', express.static(uploadPath));
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
 }));*/
-// 🔥 CORS MANUAL (SOLUCIÓN DEFINITIVA)
-const allowedOrigin = 'https://mekaplus-frontend.up.railway.app';
-
+// ✅ CORS FLEXIBLE Y SEGURO
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', allowedOrigin);
+  const origin = req.headers.origin;
+
+  // Permitir cualquier *.railway.app (frontend en Railway)
+  if (origin && origin.includes('.railway.app')) {
+    res.header('Access-Control-Allow-Origin', origin);
+  }
+  // Permitir localhost para desarrollo
+  else if (origin && origin.includes('localhost')) {
+    res.header('Access-Control-Allow-Origin', origin);
+  }
+  // Permitir requests sin origin (server-to-server, mobile)
+  else if (!origin) {
+    res.header('Access-Control-Allow-Origin', '*');
+  }
+
   res.header('Access-Control-Allow-Credentials', 'true');
-  res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS,PATCH');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+  res.header('Access-Control-Max-Age', '86400');
 
   if (req.method === 'OPTIONS') {
     return res.sendStatus(204);
