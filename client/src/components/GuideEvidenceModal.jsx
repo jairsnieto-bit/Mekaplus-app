@@ -12,7 +12,7 @@ const GuideEvidenceModal = ({ guide, onClose }) => {
 
   // ✅ Construir URL completa de la imagen
   const imageUrl = hasEvidence 
-    ? `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}${guide.evidenceImage}`
+    ? `${import.meta.env.VITE_API_URL || 'https://mekaplus-app-production.up.railway.app/api'}${guide.evidenceImage}`
     : null;
 
   // ✅ Descargar imagen
