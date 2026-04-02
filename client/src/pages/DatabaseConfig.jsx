@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Database, CheckCircle, XCircle, RefreshCw, Shield, MapPin, Link as LinkIcon, Server } from 'lucide-react';
 import toast from 'react-hot-toast';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const API_URL = import.meta.env.VITE_API_URL || 'https://mekaplus-app-production.up.railway.app/api';
 
 const DatabaseConfig = () => {
   const [config, setConfig] = useState(null);
